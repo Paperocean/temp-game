@@ -1,4 +1,4 @@
-@MyLocalServer_HostAddress = https://localhost:5084
+@MyLocalServer_HostAddress = https://localhost:7117
 
 POST {{MyLocalServer_HostAddress}}/sendscore
 Content-Type: application/json

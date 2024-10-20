@@ -1,41 +1,47 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Dodaj usługi do kontenera
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Włącz Swagger w trybie dewelopera
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Włącz obsługę HTTPS
+// app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Zmienna do przechowywania ostatniego wyniku
+int lastScore = 0;
 
-app.MapGet("/weatherforecast", () =>
+// Definiowanie endpointa do odbierania wyników
+app.MapPost("/sendscore", (ScoreData scoreData) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    lastScore = scoreData.Score; // Zapisz ostatni wynik
+    Console.WriteLine($"Otrzymano wynik: {lastScore}");
+    return Results.Ok(scoreData);
+});
+
+// Definiowanie endpointa do pobierania ostatniego wyniku
+app.MapGet("/getscore", () =>
+{
+    return Results.Ok(new ScoreData { Score = lastScore });
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// Klasa modelu danych
+public class ScoreData
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public int Score { get; set; }
 }
+

@@ -1,0 +1,5 @@
+% Start server %
+ -> dotnet run --launch-profile https
+
+
+dotnet add package Swashbuckle.AspNetCore
