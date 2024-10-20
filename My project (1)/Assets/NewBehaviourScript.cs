@@ -11,7 +11,14 @@ public class NewBehaviourScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Tutaj możesz umieścić kod, który ma być wykonany przy starcie gry
+        // Przypisz metodę do zdarzenia kliknięcia przycisku
+        sendScoreButton.onClick.AddListener(OnSendScoreButtonClicked);
+    }
+
+    // Metoda wywoływana po naciśnięciu przycisku
+    void OnSendScoreButtonClicked()
+    {
+        Debug.Log("Działa!"); // Wypisz komunikat w konsoli
     }
 
     // Update is called once per frame
